@@ -1,0 +1,21 @@
+# Python caches / environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+
+# Local tools and OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local secrets and recordings (historical tracked files remain tracked)
+.env
+.env.*
+!.env.example
+recordings/
+outputs/

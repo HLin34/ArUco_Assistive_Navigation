@@ -1,0 +1,14 @@
+# Dependencies inferred from the original 2022–2023 Python scripts.
+# Historical version numbers are not available; this is NOT a tested lockfile.
+# Old OpenCV ArUco APIs (Dictionary_get, DetectorParameters_create,
+# estimatePoseSingleMarkers) may require a compatible legacy opencv-contrib-python.
+opencv-contrib-python
+numpy
+SpeechRecognition
+gTTS
+playsound
+pyttsx3
+
+# Microphone input via SpeechRecognition commonly requires a compatible
+# PyAudio installation (often platform-specific). Install separately as needed.
+# PyAudio
