@@ -60,7 +60,7 @@ Other teammates primarily developed ArUco detection, distance estimation, broade
 | `example.mp3`, `DISTANCE-ESTIMATION-master/*.mp3` | Historical sample audio artifacts |
 | `requirements.txt` | Inferred Python dependencies; not a verified environment lock |
 
-Original filenames and paths are retained to preserve the history and avoid silently breaking relative paths.
+Original filenames and paths are retained to preserve the history and avoid silently breaking relative paths. The later maintenance changes are available in Git history; they were not part of the original hackathon submission.
 
 ## Reproducing and limitations
 
@@ -74,14 +74,20 @@ To explore the legacy code:
 4. Ensure the camera is correctly calibrated for the device in use; the committed `.npz` file is historical and is not appropriate for arbitrary cameras.
 5. Review the code and marker IDs before running any live demonstration.
 
+Hardware-independent logic checks (Python standard library only):
+
+```bash
+python -m unittest discover -s tests -v
+```
+
 **Important:** This is **not a tested one-command installation guide**. Running it may require compatible historical OpenCV, Windows audio configuration, microphone permissions, network access for speech services, and modification of relative paths. The scripts have not been revalidated on current environments. Do not use this prototype for real-world mobility decisions.
 
 ### Known issues
 
-- `combine.py` can retrigger speech continuously while a marker remains visible.
+- **Maintained in 2026:** `combine.py` now rate-limits repeated audio announcements, uses script-relative paths and ID-based message lookup; these improvements have not been verified with the original hardware.
 - Two different `sound_output.json` files contain different ID mappings; the combined script expects the one in its own directory.
-- Some audio playback paths use Windows-specific `os.system("start ...")`; others are incomplete.
-- `test.py` has a missing `datetime` import and a problematic conditional.
+- **Maintained in 2026:** `combine.py` uses the existing `playsound` dependency for local MP3 output. Other historical experiment files may still have platform-specific playback requirements.
+- **Maintained in 2026:** `test.py` corrects the missing import and exit condition; `Speech.py` avoids duplicate recognition requests.
 - The camera calibration and positional thresholds are illustrative; no accuracy or accessibility evaluation is provided.
 - The complete Android-to-PC-to-Android audio return path has not been verified.
 
