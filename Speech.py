@@ -1,33 +1,47 @@
+"""Original speech-input experiment, with minimal maintenance fixes."""
+from pathlib import Path
+import os
+
 import speech_recognition as sr
 from gtts import gTTS
-import os
-def SpeechToText():
-    r = sr.Recognizer()   #Speech recognition
+
+AUDIO_FILE = Path(__file__).resolve().parent / "example.mp3"
+
+
+def speech_to_text():
+    recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         print("Say something!")
-        audio = r.listen(source)
-    try:
-        if(r.recognize_google(audio, language = 'zh-tw')=='你好'):
-            mytext = "誠宜開張聖聽，以光先帝遺德，恢弘志士之氣，不宜妄自菲薄，引喻失義，以塞忠諫之路也"
-            audio = gTTS(text=mytext, lang="zh", slow=False)
-            audio.save("example.mp3")
-            os.system("start example.mp3")
-        elif(r.recognize_google(audio, language = 'zh-tw')=='手機'):
-            mytext = "no I am not"
-            audio = gTTS(text=mytext, lang="en", slow=False)
-            audio.save("example.mp3")
-            os.system("start example.mp3")
-        return 1
-    except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand what the you say")
-        return 0
-    except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
-        return 0 
-while(1):
-    again=SpeechToText()
-    if(again):
-        break
-    print(again)
+        audio = recognizer.listen(source)
 
-#type python catchErrorSpeech.py to execute
+    try:
+        # Perform a single recognition request per recorded utterance.
+        query = recognizer.recognize_google(audio, language="zh-TW")
+    except sr.UnknownValueError:
+        print("Google Speech Recognition could not understand the audio.")
+        return False
+    except sr.RequestError as exc:
+        print(f"Speech recognition request failed: {exc}")
+        return False
+
+    responses = {
+        "你好": ("誠宜開張聖聽，以光先帝遺德，恢弘志士之氣，不宜妄自菲薄，引喻失義，以塞忠諫之路也", "zh"),
+        "手機": ("no I am not", "en"),
+    }
+    response = responses.get(query)
+    if response is None:
+        print(f"No response mapped for: {query}")
+        return False
+
+    text, language = response
+    gTTS(text=text, lang=language, slow=False).save(str(AUDIO_FILE))
+    if os.name == "nt":
+        os.startfile(str(AUDIO_FILE))  # Windows-specific historical setup
+    else:
+        print(f"Generated audio: {AUDIO_FILE}")
+    return True
+
+
+if __name__ == "__main__":
+    while not speech_to_text():
+        pass
